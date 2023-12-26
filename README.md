@@ -18,6 +18,8 @@ To install CUDA in python, run:
 
 To install VPF, refer to here, https://github.com/NVIDIA/VideoProcessingFramework.
 
+As we want to modify pyrender's source code, we git clone one copy to project folder, using pyrender=0.1.45. In our repo, we added 4 py files, ./pyrender/renderer_cuda.py, ./pyrender/renderer_grid.py, ./pyrender/offscreen_grid.py, ./pyrender/offscreen_cuda.py. Modified file ./pyrender/platform/egl.py, ./pyrender/__init__.py. To check demo.py how to use viewport grid and CUDA/OpenGL interop in pyrender.
+
 ## Optimization
 
 Currently we first optimized rendering part performance, and leave AI model conversion to TRT later. We use CUDA/OpenGL interop to speed up the read back framebuffer pixels from OpenGL/pyrender, without leaving GPU, to VPF(VideoProcessingFramework, NVIDIA GPU hardware video encoder/decoder solution for python). To further improve the inference performance, we dev a viewport grid strategy in OpenGL/pyrender which can rendering multi-frames, say 2x3 frames into the same framebuffer, to making rendering pipeline as busy as possible. These 3 optimization schemes makes 3.8X speed up only for rendering/video encoding stages, please check the code in detail. We also split the CUDA/OpenGL interop and viewport grid source code from the baseline, make it easier used in other pipeline.
